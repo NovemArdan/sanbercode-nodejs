@@ -1,0 +1,8 @@
+1. Callback Hell: Callback hell merujuk pada situasi di Node.js dan JavaScript di mana penggunaan fungsi callback yang berlebihan menyebabkan kode yang rumit dan bertingkat, sehingga sulit dibaca, dipelihara, dan didebug. Untuk menghindari callback hell dapat menggunakan Promise, async/await, atau library yang mempermudah operasi asinkron seperti Async.js.
+
+2. Perbedaan antara `then` dan `catch` dalam Promise:
+   - then(): Digunakan untuk menjadwalkan callback yang akan dieksekusi jika Promise terpenuhi.
+   - catch(): Digunakan untuk penanganan kesalahan, menjadwalkan callback yang akan dieksekusi jika Promise ditolak.
+
+3. Menangani Kesalahan dalam Fungsi yang Menggunakan Async/Await:
+   Untuk menangani kesalahan dalam fungsi yang menggunakan async/await dapat menggunakan blok try-catch. Letakkan operasi asinkron di dalam blok `try`, dan tangani kesalahan yang mungkin terjadi di dalam blok `catch`. Metode ini menyediakan sintaks yang lebih bersih dan mudah dibaca dibandingkan dengan menggabungkan `.catch()` pada Promise.
