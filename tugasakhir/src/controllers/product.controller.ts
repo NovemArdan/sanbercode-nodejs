@@ -1,15 +1,35 @@
 import { Request, Response } from "express";
 import ProductsModel from "../models/products.model";
+import * as Yup from 'yup'; // Correct the import statement
 
-export default {
+// Define a Yup validation schema for product creation
+const createValidationSchema = Yup.object().shape({
+  name: Yup.string().required(),
+  price: Yup.number().required(),
+  category: Yup.string().required(),
+  description: Yup.string().required(),
+  images: Yup.array().of(Yup.string()).required().min(1),
+  qty: Yup.number().required().min(1),
+});
+
+const productsController = {
   async create(req: Request, res: Response) {
     try {
+      // Validate the incoming request body against the schema
+      await createValidationSchema.validate(req.body);
       const result = await ProductsModel.create(req.body);
       res.status(201).json({
         data: result,
         message: "Success create product",
       });
     } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        res.status(400).json({
+          data: error.errors,
+          message: "Validation failed",
+        });
+        return;
+      }
       const err = error as Error;
       res.status(500).json({
         data: err.message,
@@ -54,11 +74,8 @@ export default {
       const result = await ProductsModel.findOneAndUpdate(
         { _id: req.params.id },
         req.body,
-        {
-          new: true,
-        }
+        { new: true }
       );
-
       res.status(200).json({
         data: result,
         message: "Success update product",
@@ -76,7 +93,6 @@ export default {
       const result = await ProductsModel.findOneAndDelete({
         _id: req.params.id,
       });
-
       res.status(200).json({
         data: result,
         message: "Success delete product",
@@ -90,3 +106,5 @@ export default {
     }
   },
 };
+
+export default productsController;
