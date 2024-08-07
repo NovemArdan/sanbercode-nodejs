@@ -1,12 +1,12 @@
-//route.ts
 import express from 'express';
 import { single, multiple } from './middlewares/upload.middleware';
 import { handleUpload } from './utils/cloudinary';
-import categoriesController from './controllers/categories.controller';  
+import categoriesController from './controllers/categories.controller';
+import productsController from './controllers/product.controller'; // Make sure you have this controller
 
 const router = express.Router();
 
-// route single upload
+// Route for single file upload
 router.post('/upload/single', single, async (req, res) => {
     if (!req.file || !req.file.buffer) {
         return res.status(400).json({ message: 'No file uploaded.' });
@@ -19,14 +19,14 @@ router.post('/upload/single', single, async (req, res) => {
     }
 });
 
-// route multiple upload
+// Route for multiple file uploads
 router.post('/upload/multiple', multiple, async (req, res) => {
     if (!req.files || req.files.length === 0) {
         return res.status(400).json({ message: 'No files uploaded.' });
     }
     try {
         const results = await Promise.all(
-            (req.files as Express.Multer.File[]).map((file) => {
+            (req.files as Express.Multer.File[]).map(file => {
                 if (file.buffer) {
                     return handleUpload(file.buffer);
                 } else {
@@ -40,11 +40,18 @@ router.post('/upload/multiple', multiple, async (req, res) => {
     }
 });
 
-// CRUD Categories
+// CRUD operations for Categories
 router.get("/categories", categoriesController.findAll);
 router.post("/categories", categoriesController.create);
 router.get("/categories/:id", categoriesController.findOne);
 router.put("/categories/:id", categoriesController.update);
 router.delete("/categories/:id", categoriesController.delete);
+
+// CRUD operations for Products
+router.get("/products", productsController.findAll);
+router.post("/products", productsController.create);
+router.get("/products/:id", productsController.findOne);
+router.put("/products/:id", productsController.update);
+router.delete("/products/:id", productsController.delete);
 
 export default router;
