@@ -1,3 +1,4 @@
+//product.controller.ts
 import { Request, Response } from "express";
 import ProductsModel from "../models/products.model";
 import * as Yup from 'yup'; // Correct the import statement

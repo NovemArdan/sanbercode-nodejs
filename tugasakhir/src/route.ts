@@ -2,7 +2,8 @@ import express from 'express';
 import { single, multiple } from './middlewares/upload.middleware';
 import { handleUpload } from './utils/cloudinary';
 import categoriesController from './controllers/categories.controller';
-import productsController from './controllers/product.controller'; // Make sure you have this controller
+import productsController from './controllers/product.controller'; // Make sure the controller is correctly named
+import * as orderController from './controllers/order.controller'; // Import order controllers
 
 const router = express.Router();
 
@@ -14,8 +15,8 @@ router.post('/upload/single', single, async (req, res) => {
     try {
         const result = await handleUpload(req.file.buffer);
         res.json({ message: 'File uploaded successfully!', data: result });
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to upload image', error });
+    } catch (error: any) { // Type the error as any or as a specific type if known
+        res.status(500).json({ message: 'Failed to upload image', error: error.message });
     }
 });
 
@@ -35,8 +36,8 @@ router.post('/upload/multiple', multiple, async (req, res) => {
             })
         );
         res.json({ message: 'Files uploaded successfully!', data: results });
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to upload images', error });
+    } catch (error: any) { // Type the error as any or as a specific type if known
+        res.status(500).json({ message: 'Failed to upload images', error: error.message });
     }
 });
 
@@ -53,5 +54,9 @@ router.post("/products", productsController.create);
 router.get("/products/:id", productsController.findOne);
 router.put("/products/:id", productsController.update);
 router.delete("/products/:id", productsController.delete);
+
+// Routes for Order Management
+router.post('/orders', orderController.createOrder);
+router.get('/orders/user/:userId', orderController.findOrdersByUser);
 
 export default router;
